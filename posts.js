@@ -33,6 +33,12 @@ window.posts = [
   {slug:'raspi-docker-portainer',date:'2021-04-20',category:'raspberry pi',title:'docker und portainer auf dem raspberry pi bringen dienste unter, ohne dass sie sich gegenseitig zerlegen.',excerpt:'ein befehl installiert docker, ein zweiter eine grafische oberfläche dafür. der rest ist geduld beim ersten download.',body:['ein einzelner dienst auf einer sd-karte ist schnell aufgesetzt. sobald der zweite dazukommt, will niemand mehr von hand abhängigkeiten und ports gegeneinander abwägen. dafür ist docker da: jeder dienst in seinem eigenen container, ohne sich gegenseitig ins gehege zu kommen.','raspberry pi os über den offiziellen imager auf die karte schreiben und im erweiterten menü direkt hostname, ssh und ein passwort setzen. dann braucht es nach dem ersten boot weder monitor noch tastatur, nur eine ssh-verbindung.','<code>ssh pi@raspberrypi.local</code>','docker installiert sich über das offizielle install-script. das lädt ein shell-script herunter und führt es aus, was man mit gesundem misstrauen betrachten darf, für ein testsystem im eigenen netz aber ein vertretbarer kompromiss ist.','<code>curl -fsSL https://get.docker.com -o get-docker.sh\nsudo sh get-docker.sh\nsudo usermod -aG docker $USER\nnewgrp docker\ndocker run hello-world</code>','wenn hello-world eine ausgabe bringt, redet die shell erfolgreich mit dem docker-daemon. jetzt kommt portainer dazu, eine weboberfläche, die einem das meiste manuelle hantieren mit docker-befehlen abnimmt.','<code>docker volume create portainer_data\ndocker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest</code>','portainer läuft danach unter https://raspberrypi.local:9443, mit einem selbstsignierten zertifikat, das der browser erstmal ablehnt. beim ersten login legt man admin-benutzer und passwort fest, mindestens zwölf zeichen, portainer verhandelt darüber nicht.','neue container über die "container hinzufügen"-maske anlegen: image-namen eintragen, unter den erweiterten netzwerk-einstellungen bei bedarf "host" statt einer bridge wählen, damit der dienst wie ein normales gerät im lokalen netz auftaucht, und die restart-policy auf "always" stellen. danach läuft der dienst auch nach einem stromausfall von allein wieder hoch.','jeder weitere dienst ist danach nur noch ein weiteres image und ein klick auf "deploy", nicht mehr ein weiterer nachmittag mit abhängigkeiten.']}
 ];
 
+const normalizeSnippetNewlines = (paragraph) => paragraph
+  .replaceAll(/\\\\n/g, '\\' + '\n')
+  .replaceAll(/\\n/g, '\n');
+window.posts.forEach((post) => {
+  post.body = post.body.map(normalizeSnippetNewlines);
+});
 const postBySlug = new Map(window.posts.map((post) => [post.slug, post]));
 const keepParagraphs = (slug, indexes) => {
   const post = postBySlug.get(slug);
@@ -41,7 +47,7 @@ const keepParagraphs = (slug, indexes) => {
 const addDepth = (slug, paragraphs) => {
   const post = postBySlug.get(slug);
   const source = post.body.pop();
-  post.body.push(...paragraphs, source);
+  post.body.push(...paragraphs.map(normalizeSnippetNewlines), source);
 };
 
 // Kleine Werkzeuge bleiben kurze Notizen. Dienste mit Daten, Zugängen oder
@@ -55,6 +61,76 @@ keepParagraphs('mealie', [0, 1, 4, 5]);
 keepParagraphs('freshrss', [0, 1, 2, 3, 5]);
 keepParagraphs('homepage-dashboard', [0, 1, 3, 5]);
 keepParagraphs('adguard-home', [0, 1, 2, 3, 5]);
+
+addDepth('uptime-kuma', [
+  'für ein Update im Compose-Ordner erst das neue image laden, dann die container neu erzeugen und die letzten Zeilen kontrollieren. den eigenen Ordnerpfad entsprechend anpassen:',
+  '<code>cd ~/uptime-kuma\\ndocker compose pull\\ndocker compose up -d\\ndocker compose logs --tail=100</code>'
+]);
+
+addDepth('vaultwarden', [
+  'ein kleiner Backup-Befehl für den persistenten data-Ordner ist ein sinnvoller Anfang. die Archivdatei muss anschließend auf ein anderes System oder Medium, sonst ist sie nur eine zweite Kopie auf demselben Risiko:',
+  '<code>tar -C /vw-data -czf vaultwarden-data-$(date +%F).tar.gz .</code>'
+]);
+
+addDepth('changedetection', [
+  'wenn eine überwachte seite unerwartet still bleibt oder zu viele Änderungen produziert, zuerst die Container-Ausgabe lesen, statt sofort alle Watches neu anzulegen:',
+  '<code>docker logs --follow changedetection.io</code>'
+]);
+
+addDepth('mealie', [
+  'die offizielle Update-Reihenfolge bleibt bewusst langweilig: Release Notes und Backup zuerst, dann image laden und die Compose-Services neu starten:',
+  '<code>docker compose pull\\ndocker compose up -d\\ndocker compose logs --tail=100</code>'
+]);
+
+addDepth('paperless-ngx', [
+  'nach Import oder Update nicht nur auf die Weboberfläche vertrauen. der Containerstatus und die letzten Logzeilen zeigen, ob Worker und Webserver tatsächlich wieder arbeiten:',
+  '<code>docker compose ps\\ndocker compose logs --tail=100 webserver</code>'
+]);
+
+addDepth('freshrss', [
+  'bei einer git-basierten Installation aktualisiert FreshRSS den Feedbestand über sein eigenes Script. der Aufruf muss mit demselben Webserver-Benutzer laufen, der auch in data schreiben darf:',
+  '<code>cd /usr/share/FreshRSS\\nsudo -u www-data /usr/bin/php ./app/actualize_script.php</code>'
+]);
+
+addDepth('adguard-home', [
+  'nach der Umstellung des Routers bestätigt eine gezielte Anfrage, ob der lokale Resolver überhaupt antwortet. die Adresse durch die eigene AdGuard-Home-IP ersetzen:',
+  '<code>dig @192.168.1.2 example.com</code>'
+]);
+
+addDepth('actual-budget', [
+  'bei einer Compose-Installation zieht dieser Zweizeiler das neue Release und startet den Server wieder. danach kurz anmelden und ein vorhandenes Budget öffnen, bevor der alte Container endgültig vergessen ist:',
+  '<code>docker compose pull && docker compose up -d</code>'
+]);
+
+addDepth('stirling-pdf', [
+  'für einen dauerhaften Dienst bekommt der Container einen Namen, eine Restart-Policy und nur einen lokalen Port für den Reverse Proxy:',
+  '<code>docker run -d --name stirling-pdf --restart unless-stopped \\\\n  -p 127.0.0.1:8080:8080 \\\\n  docker.stirlingpdf.com/stirlingtools/stirling-pdf</code>'
+]);
+
+addDepth('gitea', [
+  'vor jedem Gitea-Update zuerst die Daten sichern, dann image und Service erneuern. die Logausgabe danach nicht überspringen, weil Datenbankmigrationen dort sichtbar werden:',
+  '<code>docker compose pull\\ndocker compose up -d\\ndocker compose logs --tail=100 server</code>'
+]);
+
+addDepth('homepage-dashboard', [
+  'bei einem leeren oder abgewiesenen Dashboard ist die Container-Ausgabe der erste Ort für einen falschen erlaubten Hostnamen oder eine fehlerhafte YAML-Datei:',
+  '<code>docker logs --tail=100 homepage</code>'
+]);
+
+addDepth('immich', [
+  'nach einer Änderung der .env müssen die Dienste neu erzeugt werden, nicht nur neu gestartet. zuerst Status und die server-Logs kontrollieren; bei einer großen Bibliothek dürfen Hintergrundjobs danach noch längere Zeit arbeiten:',
+  '<code>docker compose up -d\\ndocker compose ps\\ndocker compose logs --tail=100 immich-server</code>'
+]);
+
+addDepth('n8n', [
+  'bei fehlenden Ausführungen oder einem nicht erreichbaren Editor liefern die letzten Container-Logs meist die konkrete Variable oder den Port, der nicht passt:',
+  '<code>docker logs --tail=100 n8n</code>'
+]);
+
+addDepth('gotify', [
+  'nach dem Anlegen einer Anwendung in Gotify schickt dieser Test eine sichtbare Nachricht. den Platzhalter durch den Anwendungstoken ersetzen und ihn danach nicht in Shell-Historie oder Skripten teilen:',
+  '<code>read -rsp "Gotify token: " GOTIFY_TOKEN; echo\\ncurl -X POST "http://127.0.0.1:8080/message?token=$GOTIFY_TOKEN" \\\\n  -F "title=test" \\\\n  -F "message=gotify funktioniert" \\\\n  -F "priority=5"\\nunset GOTIFY_TOKEN</code>'
+]);
 
 addDepth('vaultwarden', [
   'ein passwortmanager schützt nicht gegen einen bereits kompromittierten laptop oder eine phishing-seite. er sorgt aber dafür, dass jede website ein anderes starkes passwort bekommt, dass ein leak nicht gleich alle anderen logins trifft und dass die familie nicht auf eine gemeinsame passwortdatei angewiesen ist. die sicherheitsgrenze beginnt deshalb beim endgerät, nicht erst am docker-container.',
