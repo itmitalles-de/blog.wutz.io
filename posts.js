@@ -92,3 +92,55 @@ addDepth('immich', [
   'Freigaben sind der Punkt, an dem eine private Bibliothek plötzlich öffentlich werden kann. vor dem ersten geteilten Link prüfen, welche Reichweite er hat, ob ein Ablaufdatum passt und ob eine kleine Auswahl besser wäre als ein gesamtes Album. mit Familie funktioniert eine klare gemeinsame Bibliotheksregel besser als ein unübersichtlicher Sammelimport.',
   'ein guter Wiederherstellungstest ist hier konkret: einen kleinen Satz Fotos samt Metadaten in einer separaten Instanz aus dem Backup laden und auf einem zweiten Gerät wiederfinden. erst wenn Aufnahmezeit, Album, Vorschau und Originaldatei zusammenkommen, trägt der Begriff Foto-Backup seinen Namen.'
 ]);
+
+addDepth('vaultwarden', [
+  'hinter caddy bleibt der Container auf localhost; das reicht als minimale https-schicht für eine echte Domain:',
+  '<code>passwort.example.de {\\n  reverse_proxy 127.0.0.1:8000\\n}</code>'
+]);
+
+addDepth('linkding', [
+  'der direkte Docker-Start aus der offiziellen Anleitung legt die SQLite-Daten dauerhaft auf dem Host ab. nach dem Start erzeugt der zweite Befehl den ersten Benutzer und fragt das Passwort interaktiv ab:',
+  '<code>mkdir -p /srv/linkding\\ndocker run --name linkding -p 9090:9090 -v /srv/linkding:/etc/linkding/data -d sissbruecker/linkding:latest\\ndocker exec -it linkding python manage.py createsuperuser --username=tim --email=tim@example.com</code>'
+]);
+
+addDepth('mealie', [
+  'für den ersten Start die offizielle SQLite-Compose-Vorlage in einen eigenen Service-Ordner kopieren und dann dort starten. SQLite reicht laut Projekt für die meisten kleinen Haushalte; bei vielen gleichzeitigen Schreibvorgängen ist PostgreSQL der spätere Schritt.',
+  '<code>mkdir -p ~/docker/mealie\\ncd ~/docker/mealie\\n# offizielle SQLite-Vorlage als docker-compose.yaml ablegen\\ndocker compose up -d</code>'
+]);
+
+addDepth('actual-budget', [
+  'ohne Compose startet Actual mit einem persistenten Host-Ordner so. der offizielle latest-Tag steht für das jüngste Release; ein absichtlich gepinnter Tag ist für einen planbaren Updatezeitpunkt die konservativere Wahl.',
+  '<code>docker run --pull=always --restart=unless-stopped -d \\\\n  -p 5006:5006 \\\\n  -v /srv/actual:/data \\\\n  --name actual actualbudget/actual-server:latest</code>'
+]);
+
+addDepth('gitea', [
+  'die kleine SQLite-Compose-Variante aus der Gitea-Dokumentation reicht für den ersten eigenen Dienst. UID und GID müssen zum Eigentümer des lokalen data-Ordners passen, sonst startet der Container mit einem Berechtigungsfehler.',
+  '<code>services:\\n  server:\\n    image: docker.gitea.com/gitea:1\\n    container_name: gitea\\n    restart: always\\n    environment:\\n      - USER_UID=1000\\n      - USER_GID=1000\\n    volumes:\\n      - ./gitea:/data\\n    ports:\\n      - "3000:3000"\\n      - "222:22"</code>',
+  'danach im selben Ordner starten und den ersten Admin im Browser anlegen:',
+  '<code>docker compose up -d\\ndocker compose logs --follow server</code>'
+]);
+
+addDepth('immich', [
+  'für einen ersten Test liefert die offizielle Schnellstart-Dokumentation die Compose-Datei und die zugehörige Umgebungsvorlage direkt aus dem Release. vor dem Start in der .env mindestens upload_location, db_data_location, zeitzone und ein eigenes Datenbankpasswort prüfen.',
+  '<code>mkdir ./immich-app\\ncd ./immich-app\\nwget -O docker-compose.yml https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml\\nwget -O .env https://github.com/immich-app/immich/releases/latest/download/example.env\\ndocker compose up -d</code>'
+]);
+
+addDepth('n8n', [
+  'für den Dauerbetrieb ersetzt ein Hintergrundcontainer den kurzen Demo-Start. der n8n-Ordner liegt dann in einem Docker-Volume und überlebt einen Containerwechsel:',
+  '<code>docker volume create n8n_data\\ndocker run -d --name n8n --restart=unless-stopped \\\\n  -p 127.0.0.1:5678:5678 \\\\n  -v n8n_data:/home/node/.n8n \\\\n  docker.n8n.io/n8nio/n8n</code>'
+]);
+
+addDepth('gotify', [
+  'der offizielle Docker-Start braucht nur einen persistierten data-Ordner. mit localhost-Bindung bleibt der Dienst hinter dem reverse proxy; die Zeitzone ist für lesbare Meldungszeiten gesetzt:',
+  '<code>docker run -d --name gotify --restart unless-stopped \\\\n  -p 127.0.0.1:8080:80 \\\\n  -e TZ="Europe/Berlin" \\\\n  -v /srv/gotify:/app/data gotify/server</code>'
+]);
+
+addDepth('stirling-pdf', [
+  'zum Ausprobieren ist der offizielle Einzeiler genau richtig; die Oberfläche liegt danach auf port 8080:',
+  '<code>docker run -p 8080:8080 docker.stirlingpdf.com/stirlingtools/stirling-pdf</code>'
+]);
+
+addDepth('homepage-dashboard', [
+  'ohne Docker-Integration genügt ein Konfigurationsordner und der gewünschte Hostname. die Konfiguration bleibt damit als normale Datei auf dem Server lesbar:',
+  '<code>docker run --name homepage --restart unless-stopped \\\\n  -e HOMEPAGE_ALLOWED_HOSTS=start.example.de \\\\n  -p 3000:3000 \\\\n  -v /srv/homepage/config:/app/config \\\\n  ghcr.io/gethomepage/homepage:latest</code>'
+]);
