@@ -23,6 +23,12 @@ if (grid && window.posts) {
   const categories = [...new Set(window.posts.map((post) => post.category))].sort();
   const years = [...new Set(window.posts.map((post) => post.date.slice(0, 4)))].sort().reverse();
 
+  const archiveMeta = document.querySelector('#archive-meta');
+  if (archiveMeta) {
+    const yearRange = years.length > 1 ? `${years[years.length - 1]}–${years[0]}` : years[0];
+    archiveMeta.append(document.createTextNode(` ${window.posts.length} notes · ${yearRange}`));
+  }
+
   function filterButton(label, value, key) {
     const button = document.createElement('button');
     button.type = 'button';
