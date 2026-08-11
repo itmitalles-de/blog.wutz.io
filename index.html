@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>(function(){try{var t=localStorage.getItem('itmitalles-theme')||'dark';document.documentElement.dataset.theme=t}catch(e){}})()</script>
-    <meta name="description" content="IT mit alles Field Notes: Linux, Homelab, Hardware und Self-hosting ohne Marketingfolie.">
+    <meta name="description" content="Linux, Hardware, Self-hosting und Homelab.">
     <meta name="theme-color" content="#142329">
     <meta property="og:title" content="IT mit alles Blog">
-    <meta property="og:description" content="Linux, Homelab, Hardware und Self-hosting. Direkt aus der Praxis.">
+    <meta property="og:description" content="Linux, Hardware, Self-hosting und Homelab.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://blog.itmitalles.de/">
     <title>Blog – IT mit alles</title>
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="journal.css">
     <link rel="stylesheet" href="lowercase.css">
     <link rel="stylesheet" href="feed.css">
+    <link rel="stylesheet" href="cards.css">
     <link rel="stylesheet" href="journal.css">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
   </head>
@@ -24,48 +25,26 @@
       <div class="shell nav-wrap">
         <a class="brand" href="/" aria-label="IT mit alles Blog Startseite">
           <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44"><path d="M7 8h30v28H7z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M13 15h8M13 22h18M13 29h12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="33" cy="15" r="3" fill="currentColor"/></svg></span>
-          <span>IT mit <b>alles</b><small>Field Notes</small></span>
+          <span>it mit <b>alles</b> blog</span>
         </a>
-        <nav aria-label="Hauptnavigation"><a href="#artikel">Notes</a><a href="#themen">Topics</a><a href="#ueber-den-blog">About</a></nav>
-        <div class="nav-actions"><a class="contact-link" href="https://itmitalles.de/">itmitalles.de ↗</a><button class="theme-toggle" type="button" aria-label="Farbschema wechseln" aria-pressed="true"><span aria-hidden="true">◐</span></button></div>
+        <div class="nav-actions"><button class="theme-toggle" type="button" aria-label="Farbschema wechseln" aria-pressed="true"><span aria-hidden="true">◐</span></button></div>
       </div>
     </header>
 
     <main id="inhalt">
-      <section class="hero">
-        <div class="shell hero-grid">
-          <div>
-            <p class="eyebrow"><i></i> IT mit alles · Field Notes</p>
-            <h1>Linux, Homelab und <em>zu viel Zeug.</em></h1>
-            <p class="lead">Distros, Hardware, Self-hosting und Smart Home. Dinge, die Spaß machen, bis sie um zwei Uhr nachts nicht mehr laufen.</p>
-            <div class="hero-actions"><a class="text-link" href="#artikel">Neue Notes <span>↓</span></a><a class="text-link" href="#ueber-den-blog">Worum es geht <span>→</span></a></div>
-          </div>
-          <aside class="status-card" aria-label="Blog-Prinzipien">
-            <div class="window-bar"><i></i><i></i><i></i><span>editorial-notes.md</span></div>
-            <div class="status-content">
-              <p class="status-label">WORUM ES GEHT</p>
-              <ol><li><b>01</b><span>Linux, ohne Fanclub</span></li><li><b>02</b><span>Homelab, ohne Enterprise-Theater</span></li><li><b>03</b><span>Kein generierter Fülltext</span></li></ol>
-              <p class="status-footer"><i></i> gebaut, kaputtgemacht, gefixt</p>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="topic-strip" id="themen"><div class="shell"><p>Topics</p><a href="#artikel">Linux <span>→</span></a><a href="#artikel">Hardware <span>→</span></a><a href="#artikel">Self-hosting <span>→</span></a><a href="#artikel">Homelab <span>→</span></a></div></section>
-
       <section class="articles shell" id="artikel">
-        <div class="section-heading"><div><p class="eyebrow"><i></i> Neue Notes</p><h2>Linux ohne <em>Marketingfolie.</em></h2></div><p>Neue Notes gibt es nur, wenn etwas nützlich, interessant oder kaputt ist. Das reicht als Redaktionsplan.</p></div>
+        <div class="section-heading"><div><h2>artikel</h2></div></div>
         <div class="article-grid">
           <article class="feature-card"><div class="article-visual visual-check"><span>π</span><small>Raspberry Pi</small></div><div class="card-copy"><p class="meta">Raspberry Pi · 6 Min.</p><h3><a href="artikel/it-checkliste.html">SD-Karten sind super. Bis dein Pi davon booten muss.</a></h3><p>Warum Services auf Flash irgendwann langweilig kaputtgehen und was stattdessen Sinn macht.</p><a class="read-more" href="artikel/it-checkliste.html">Note lesen <span>→</span></a></div></article>
           <article class="article-card"><div class="article-visual visual-backup"><span>⌂</span><small>Home Assistant</small></div><div class="card-copy"><p class="meta">Home Assistant · 5 Min.</p><h3><a href="artikel/backup-plan.html">Dein Smart Home ist nur so smart wie dein dümmster Sensor.</a></h3><p>Strom, WLAN und Updates sind nicht glamourös. Genau deshalb musst du sie zuerst klären.</p><a class="read-more" href="artikel/backup-plan.html">Note lesen <span>→</span></a></div></article>
           <article class="article-card"><div class="article-visual visual-wifi"><span>▣</span><small>Self-hosting</small></div><div class="card-copy"><p class="meta">Self-hosting · 4 Min.</p><h3><a href="artikel/wlan-arbeitsplatz.html">Docker läuft. Dein Dienst trotzdem nicht.</a></h3><p>Compose, Volumes, Netzwerke und der kleine Unterschied zwischen Container und Service.</p><a class="read-more" href="artikel/wlan-arbeitsplatz.html">Note lesen <span>→</span></a></div></article>
         </div>
+        <nav class="pagination" aria-label="seitennavigation"><span aria-current="page">1</span></nav>
       </section>
 
-      <section class="about" id="ueber-den-blog"><div class="shell about-grid"><div><p class="eyebrow"><i></i> Warum das hier existiert</p><h2>Wenn du gern an Linux schraubst, bist du <em>hier richtig.</em></h2></div><div><p>Das ist kein Produktblog und keine IT-Broschüre. Es geht um die Sachen, die man freiwillig zuhause aufstellt, installiert, umbaut und dann wieder repariert.</p><p>Keine kopierten Tutorials. Kein KI-Content. Wenn es nichts Gescheites zu sagen gibt, kommt auch nichts online.</p><a class="button" href="https://itmitalles.de/">Zu IT mit alles <span>↗</span></a></div></div></section>
     </main>
 
-    <footer><div class="shell footer-grid"><a class="brand footer-brand" href="https://itmitalles.de/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44"><path d="M7 8h30v28H7z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M13 15h8M13 22h18M13 29h12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="33" cy="15" r="3" fill="currentColor"/></svg></span><span>IT mit <b>alles</b><small>Blog</small></span></a><p>Praktische IT für München und das S-Bahn-Gebiet.</p><div><a href="https://itmitalles.de/impressum.html">Impressum</a><a href="https://itmitalles.de/datenschutz.html">Datenschutz</a></div><small>© 2026 IT mit alles</small></div></footer>
+    <footer><div class="shell footer-grid"><a class="brand footer-brand" href="https://itmitalles.de/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44"><path d="M7 8h30v28H7z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M13 15h8M13 22h18M13 29h12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="33" cy="15" r="3" fill="currentColor"/></svg></span><span>IT mit <b>alles</b><small>blog</small></span></a><p>linux · hardware · self-hosting</p><div><a href="https://itmitalles.de/impressum.html">impressum</a><a href="https://itmitalles.de/datenschutz.html">datenschutz</a></div><small>© 2026 it mit alles</small></div></footer>
     <script src="script.js"></script>
   </body>
 </html>
