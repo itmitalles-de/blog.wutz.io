@@ -53,7 +53,8 @@ if (grid && window.posts) {
     grid.replaceChildren(...visible.map((post) => {
       const article = document.createElement('article');
       article.className = 'article-card';
-      article.innerHTML = `<div class="article-visual"><small>${post.category}</small></div><div class="card-copy"><p class="meta">${post.date} · ${post.category}</p><h2><a href="artikel/index.html?post=${encodeURIComponent(post.slug)}">${post.title}</a></h2><p>${post.excerpt}</p><a class="read-more" href="artikel/index.html?post=${encodeURIComponent(post.slug)}">note lesen →</a></div>`;
+      const body = post.body.map((paragraph) => `<p>${paragraph}</p>`).join('');
+      article.innerHTML = `<div class="article-visual"><small>${post.category}</small></div><div class="card-copy"><p class="meta">${post.date} · ${post.category}</p><h2><a href="artikel/index.html?post=${encodeURIComponent(post.slug)}">${post.title}</a></h2>${body}<a class="read-more" href="artikel/index.html?post=${encodeURIComponent(post.slug)}">permalink →</a></div>`;
       return article;
     }));
     pagination.replaceChildren();
