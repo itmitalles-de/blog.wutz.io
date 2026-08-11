@@ -5,5 +5,6 @@
 .article-hero .shell{max-width:850px}.article-hero h1{max-width:820px;font-size:clamp(2.8rem,5.2vw,4.9rem)}
 .article-hero .lead,.article-meta{color:var(--soft)}.article-meta{margin-top:34px;font:600 .62rem "DM Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase}
 .article-body{width:min(calc(100% - 48px),740px);margin:0 auto;padding:82px 0 100px}.article-body p{margin-bottom:24px;font-size:1.02rem}.article-body h2{margin:55px 0 19px;font-size:2rem;line-height:1.05;letter-spacing:-.05em}.article-body strong{color:var(--yellow)}
+.article-body code{display:block;padding:14px 16px;border-left:3px solid var(--yellow);background:var(--paper-2);color:var(--ink);font-size:.85rem;line-height:1.5;overflow-x:auto;white-space:pre;text-transform:none}
 .article-back{display:inline-block;margin-bottom:35px;color:var(--ink);font-size:.75rem;font-weight:800;text-underline-offset:5px}.article-back:hover{color:var(--yellow)}
 @media(max-width:620px){.article-hero{padding:65px 0 44px}.article-body{width:min(calc(100% - 32px),740px);padding:58px 0 75px}.article-body p{font-size:.98rem}}
