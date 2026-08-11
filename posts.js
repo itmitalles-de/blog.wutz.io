@@ -32,3 +32,63 @@ window.posts = [
   {slug:'proxmox-bare-metal',date:'2022-11-05',category:'proxmox',title:'proxmox installierst du auf blankem blech, nicht in einer vm in einer vm.',excerpt:'ein alter tower, ein usb-stick und zwanzig minuten reichen für den ersten host.',body:['ein alter tower mit genug ram reicht für den ersten proxmox-host völlig aus. wichtiger als die cpu ist eine vernünftige ssd, sonst atmen die vms später nicht, sondern hecheln.','die iso gibt es direkt bei proxmox, auf einen usb-stick geschrieben (etcher oder rufus, beides langweilig zuverlässig) und davon gebootet. der installer fragt nach zielplatte, dateisystem und einem fully qualified hostname, der auflösbar sein muss, notfalls per hosts-datei, sonst bricht der installer ab.','ext4 reicht für einen einzelnen host mit einer platte. sobald snapshots und checksums wichtig werden, lohnt sich zfs schon beim install, weil das nachträglich umzuziehen deutlich mehr aufwand ist als eine checkbox im installer.','<code>ssh root@192.168.1.10\npveversion</code>','nach dem ersten boot läuft die weboberfläche auf port 8006, mit einem selbstsignierten zertifikat, das der browser zurecht anmeckert. einmal die ausnahme bestätigen und den host im klartext-namen abspeichern, dann ist die installation fertig, aber noch lange nicht fertig eingerichtet.']},
   {slug:'raspi-docker-portainer',date:'2021-04-20',category:'raspberry pi',title:'docker und portainer auf dem raspberry pi bringen dienste unter, ohne dass sie sich gegenseitig zerlegen.',excerpt:'ein befehl installiert docker, ein zweiter eine grafische oberfläche dafür. der rest ist geduld beim ersten download.',body:['ein einzelner dienst auf einer sd-karte ist schnell aufgesetzt. sobald der zweite dazukommt, will niemand mehr von hand abhängigkeiten und ports gegeneinander abwägen. dafür ist docker da: jeder dienst in seinem eigenen container, ohne sich gegenseitig ins gehege zu kommen.','raspberry pi os über den offiziellen imager auf die karte schreiben und im erweiterten menü direkt hostname, ssh und ein passwort setzen. dann braucht es nach dem ersten boot weder monitor noch tastatur, nur eine ssh-verbindung.','<code>ssh pi@raspberrypi.local</code>','docker installiert sich über das offizielle install-script. das lädt ein shell-script herunter und führt es aus, was man mit gesundem misstrauen betrachten darf, für ein testsystem im eigenen netz aber ein vertretbarer kompromiss ist.','<code>curl -fsSL https://get.docker.com -o get-docker.sh\nsudo sh get-docker.sh\nsudo usermod -aG docker $USER\nnewgrp docker\ndocker run hello-world</code>','wenn hello-world eine ausgabe bringt, redet die shell erfolgreich mit dem docker-daemon. jetzt kommt portainer dazu, eine weboberfläche, die einem das meiste manuelle hantieren mit docker-befehlen abnimmt.','<code>docker volume create portainer_data\ndocker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest</code>','portainer läuft danach unter https://raspberrypi.local:9443, mit einem selbstsignierten zertifikat, das der browser erstmal ablehnt. beim ersten login legt man admin-benutzer und passwort fest, mindestens zwölf zeichen, portainer verhandelt darüber nicht.','neue container über die "container hinzufügen"-maske anlegen: image-namen eintragen, unter den erweiterten netzwerk-einstellungen bei bedarf "host" statt einer bridge wählen, damit der dienst wie ein normales gerät im lokalen netz auftaucht, und die restart-policy auf "always" stellen. danach läuft der dienst auch nach einem stromausfall von allein wieder hoch.','jeder weitere dienst ist danach nur noch ein weiteres image und ein klick auf "deploy", nicht mehr ein weiterer nachmittag mit abhängigkeiten.']}
 ];
+
+const postBySlug = new Map(window.posts.map((post) => [post.slug, post]));
+const keepParagraphs = (slug, indexes) => {
+  const post = postBySlug.get(slug);
+  post.body = indexes.map((index) => post.body[index]);
+};
+const addDepth = (slug, paragraphs) => {
+  const post = postBySlug.get(slug);
+  const source = post.body.pop();
+  post.body.push(...paragraphs, source);
+};
+
+// Kleine Werkzeuge bleiben kurze Notizen. Dienste mit Daten, Zugängen oder
+// anspruchsvollem Betrieb bekommen den Raum, den sie tatsächlich brauchen.
+keepParagraphs('stirling-pdf', [0, 1, 5]);
+keepParagraphs('gotify', [0, 1, 5]);
+keepParagraphs('changedetection', [0, 1, 2, 5]);
+keepParagraphs('uptime-kuma', [0, 1, 2, 5]);
+keepParagraphs('linkding', [0, 1, 3, 5]);
+keepParagraphs('mealie', [0, 1, 4, 5]);
+keepParagraphs('freshrss', [0, 1, 2, 3, 5]);
+keepParagraphs('homepage-dashboard', [0, 1, 3, 5]);
+keepParagraphs('adguard-home', [0, 1, 2, 3, 5]);
+
+addDepth('vaultwarden', [
+  'ein passwortmanager schützt nicht gegen einen bereits kompromittierten laptop oder eine phishing-seite. er sorgt aber dafür, dass jede website ein anderes starkes passwort bekommt, dass ein leak nicht gleich alle anderen logins trifft und dass die familie nicht auf eine gemeinsame passwortdatei angewiesen ist. die sicherheitsgrenze beginnt deshalb beim endgerät, nicht erst am docker-container.',
+  'für die domain einen langweiligen namen wählen und ihn nicht jedes jahr umziehen. browser-erweiterungen und mobile apps speichern die server-url; ein späterer wechsel ist machbar, aber unnötige reibung. bei einem reverse proxy auch websocket-unterstützung prüfen, weil einige funktionen des vaults sie benötigen.',
+  'nach dem einrichten mindestens einen testaccount mit einem unwichtigen eintrag anlegen, auf einem zweiten client anmelden und anschließend aus dem backup in eine isolierte testumgebung wiederherstellen. erst wenn login, anhänge und ein verschlüsselter eintrag nach dem restore lesbar sind, ist das backup mehr als ein beruhigender ordnername.'
+]);
+
+addDepth('gitea', [
+  'die entscheidung für eine forge ist auch eine entscheidung über identitäten. für einen einzelnen menschen kann der lokale account reichen; für ein team sind eindeutig zuordenbare accounts, ein sauberer eintritt und ein sauberer entzug wichtiger als eine lange liste an rollen. oidc oder ein bestehender identity-provider lohnt sich erst, wenn er tatsächlich vorhanden und gepflegt ist.',
+  'bei der migration nicht nur die git-historie zählen. issues, wiki, releases, lfs-objekte, deploy-keys, webhooks und ci-secrets leben teilweise außerhalb des bare repositories. eine testmigration eines unkritischen projekts zeigt sehr schnell, welche der angenehmen github-funktionen man unbewusst mitbenutzt hat.',
+  'actions sind kein dekoratives feature: ein runner führt fremden oder eigenen code aus und braucht daher eine bewusst kleine Berechtigung. erst ein einfacher lint- oder testjob auf einem isolierten runner, dann registries, deployments und produktive credentials. so bleibt ein fehlkonfiguriertes repository kein unbemerkter zugang zum restlichen homelab.'
+]);
+
+addDepth('n8n', [
+  'ein guter workflow hat einen klaren auslöser, eine erkennbare eingabe und ein überprüfbares Ergebnis. „wenn etwas passiert, mach irgendwas“ funktioniert in der demo, aber nicht am montagmorgen. bei jeder automation zuerst festlegen, was bei einem timeout, einer doppelten auslieferung oder einem fehlerhaften feld passieren soll.',
+  'webhooks brauchen eine von außen erreichbare, korrekte https-url. zeitgesteuerte workflows brauchen die richtige zeitzone. beides sind unspektakuläre einstellungen, die erst auffallen, wenn ein erinnerungsworkflow um zwei stunden verschoben läuft oder ein fremder dienst seinen callback nicht zustellen kann.',
+  'entwickeln und produktiv ausführen sind getrennte Phasen. einen neuen workflow zunächst mit einem testempfänger und einer kopie der eingabedaten laufen lassen, erfolgreiche und fehlgeschlagene Ausführungen kontrollieren und erst dann den echten Zielkanal aktivieren. dadurch wird aus einer visuellen Basteloberfläche ein nachvollziehbarer Betrieb.',
+  'n8n kann viele api-zugänge bündeln. genau deshalb den Zugriff regelmäßig aufräumen: nicht mehr benutzte credentials löschen, einzelnen workflows nur die nötigen Berechtigungen geben und nachvollziehen, welcher workflow welche externen Systeme schreibt. automation verschiebt Verantwortung nicht, sie vervielfältigt sie nur schneller.'
+]);
+
+addDepth('paperless-ngx', [
+  'vor dem ersten großen import ein kurzes Ablagevokabular aufschreiben: welche Korrespondenten gibt es wirklich, welche Dokumenttypen helfen beim späteren Suchen und welche Tags sind nur überflüssige Unterordner mit anderem Namen. fünf gut gewählte Regeln sind besser als fünfzig, die niemand mehr versteht.',
+  'der scanner sollte einen eindeutig benannten konsumordner befüllen und die erste Zeit nur wenige dokumente pro Durchlauf liefern. so sieht man sofort, ob doppelseitige scans, ocr-sprache, Seitenreihenfolge und automatische Zuordnungen stimmen. eine falsch konfigurierte Stapelzufuhr produziert sonst schnell ein sehr ordentliches Chaos.',
+  'rechnungen, Verträge und Schreiben mit Fristen brauchen einen anderen Blick als alte Bedienungsanleitungen. für wichtige Dokumente einen klaren Kontrollschritt einplanen: Datum, Korrespondent, Tags und Volltext kurz gegen das Original prüfen. automatisches Matching darf Routine sparen, aber keine rechtlich relevante Ablageentscheidung unsichtbar treffen.',
+  'bei E-Mail-Importen zuerst an eine eigene Testadresse oder einen einzelnen weitergeleiteten Absender denken. automatisch jede Mailbox einzusaugen zieht Newsletter, private Kommunikation und Anhänge ohne erkennbare Grenze in dieselbe Datenbank. der bessere Prozess ist bewusst eng und wird nur erweitert, wenn er sich bewährt.',
+  'Speicherbedarf entsteht nicht nur durch die eingescannten Originale. Datenbank, Vorschaubilder, ocr-Daten und Exporte wachsen mit. früh festlegen, auf welchem Dateisystem der Datenbestand liegt, wie lange Papieroriginale nach dem Scan noch bleiben und wie ein späterer Speicherumzug ohne Datenverlust aussieht.',
+  'nach einem Update mit einer Handvoll frischer Dokumente prüfen, ob Suche, Vorschau, Export und Verbrauch des konsumordners weiterhin funktionieren. paperless ist dann gut, wenn ein alter Vertrag in Sekunden auffindbar ist und nicht erst dann, wenn die Container alle grün aussehen.'
+]);
+
+addDepth('immich', [
+  'bei einer Fotobibliothek ist die Ordnerstruktur keine Nebensache. den Upload-Speicher nicht in einen temporären docker-pfad legen, nicht zwischen zwei Rechnern teilen und nicht nebenbei von einem Synchronisationsdienst umsortieren lassen. der Pfad muss langfristig Platz, eindeutige Eigentümerschaft und eine Backup-Strategie haben.',
+  'die mobile Sicherung zunächst auf einem einzigen Gerät aktivieren und beobachten: welche Alben werden erfasst, was passiert bei mobilen Daten, welche Duplikate entstehen und ob neue Aufnahmen wirklich als Original ankommen. eine Foto-App darf erst dann im Hintergrund arbeiten, wenn sie in einem echten Alltagsfall nachvollziehbar gehandelt hat.',
+  'Gesichter, Orte und Suchindizes sind komfortabel, aber sie sind abgeleitete persönliche Daten. wer die Funktionen einschaltet, sollte verstehen, dass daraus zusätzliche Datenbank- und Indexdaten entstehen und dass sie beim Backup mitgedacht werden müssen. bequemes Suchen ist kein Grund, die eigene Datenhaltung nicht mehr zu kennen.',
+  'der erste große Import braucht Zeit und darf nicht nebenbei auf einem voll laufenden Heimserver passieren. Netz, Speicher, Datenbank und Hintergrundjobs beobachten, statt nach zehn Minuten vorschnell anzunehmen, der Prozess sei hängen geblieben. bei tausenden Videos ist Geduld ein Teil der Architektur.',
+  'Freigaben sind der Punkt, an dem eine private Bibliothek plötzlich öffentlich werden kann. vor dem ersten geteilten Link prüfen, welche Reichweite er hat, ob ein Ablaufdatum passt und ob eine kleine Auswahl besser wäre als ein gesamtes Album. mit Familie funktioniert eine klare gemeinsame Bibliotheksregel besser als ein unübersichtlicher Sammelimport.',
+  'ein guter Wiederherstellungstest ist hier konkret: einen kleinen Satz Fotos samt Metadaten in einer separaten Instanz aus dem Backup laden und auf einem zweiten Gerät wiederfinden. erst wenn Aufnahmezeit, Album, Vorschau und Originaldatei zusammenkommen, trägt der Begriff Foto-Backup seinen Namen.'
+]);
