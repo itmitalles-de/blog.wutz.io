@@ -1,0 +1,7 @@
+/* One chronological reading stream, not a card grid. */
+.articles.shell{width:min(calc(100% - 48px),820px)}
+.section-heading{display:block;margin-bottom:38px}.section-heading>p{max-width:620px;margin-top:22px}
+.article-grid{display:block;border:0}.feature-card,.article-card{display:block;min-height:0;padding:46px 0;border:0;border-bottom:1px solid var(--line);background:transparent}
+.article-visual{display:flex;align-items:center;gap:11px;min-height:0;margin-bottom:18px;padding:0;border:0;background:transparent}.article-visual span{font-size:1.4rem}.visual-wifi span{font-size:1.4rem}.article-visual small{font-size:.61rem}
+.card-copy{display:block;padding:0}.card-copy h3{max-width:720px;margin:0 0 14px;font-size:clamp(1.8rem,3.8vw,3rem);line-height:1.04}.card-copy>p:not(.meta){max-width:650px;margin-bottom:0;font-size:.93rem}.meta{margin-bottom:14px}.read-more{display:inline-block;margin-top:20px;padding-top:0}
+@media(max-width:620px){.articles.shell{width:min(calc(100% - 32px),820px)}.feature-card,.article-card{padding:34px 0}.card-copy h3{font-size:2rem}}
