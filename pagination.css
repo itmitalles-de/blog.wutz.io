@@ -1,0 +1,2 @@
+.pagination button{display:grid;width:31px;height:31px;place-items:center;border:1px solid var(--line);color:var(--ink);background:transparent;font:700 .72rem Consolas,"Liberation Mono",monospace;cursor:pointer}
+.pagination button[aria-current="true"]{border-color:var(--yellow);background:var(--yellow);color:var(--night)}
