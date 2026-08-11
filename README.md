@@ -1,6 +1,6 @@
 # IT mit alles Blog
 
-Static editorial blog for `blog.wutz.io`. It deliberately has no automated
+Static editorial blog for `blog.itmitalles.de`. It deliberately has no automated
 article or image-generation pipeline. Deploys to GitHub Pages after pushes to
 `main`.
 
