@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blog.itmitalles.de/schema/post.schema.json",
+  "title": "it mit alles blog post",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "title",
+    "slug",
+    "date",
+    "description",
+    "tags",
+    "status",
+    "canonical",
+    "body"
+  ],
+  "properties": {
+    "title": { "type": "string", "minLength": 1 },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "date": { "type": "string", "format": "date" },
+    "updated": { "type": "string", "format": "date" },
+    "description": { "type": "string", "minLength": 1 },
+    "tags": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "status": { "enum": ["Draft", "Published"] },
+    "canonical": { "type": "string", "format": "uri" },
+    "series": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slug", "title", "position"],
+      "properties": {
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "position": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "body": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

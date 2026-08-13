@@ -1,0 +1,30 @@
+{
+  "name": "blog-wutz-io",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:preview": "node scripts/build.mjs --drafts",
+    "generate:posts": "node scripts/generate-posts.mjs",
+    "check:generated": "node scripts/generate-posts.mjs --check",
+    "lint:html": "html-validate \"_site/**/*.html\"",
+    "doctor": "npm run build && npm run doctor:built",
+    "doctor:built": "node scripts/doctor.mjs",
+    "doctor:external": "npm run build && node scripts/doctor.mjs --external",
+    "setup:browsers": "playwright install chromium",
+    "test:unit": "node --test tests/unit/*.test.mjs",
+    "test:e2e": "playwright test",
+    "check": "npm run test:unit && npm run build && npm run check:generated && npm run lint:html && npm run doctor:built && npm run test:e2e",
+    "preview": "npm run build:preview && node scripts/serve.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.62.1",
+    "fast-xml-parser": "5.10.1",
+    "html-validate": "11.6.2"
+  }
+}
