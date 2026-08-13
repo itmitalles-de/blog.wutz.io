@@ -1,0 +1,14 @@
+{
+  "title": "titel der feldnotiz",
+  "slug": "titel-der-feldnotiz",
+  "date": "2026-08-13",
+  "description": "eine kurze, konkrete zusammenfassung für archiv, suche und feed.",
+  "tags": ["linux"],
+  "status": "Draft",
+  "canonical": "https://blog.itmitalles.de/artikel/titel-der-feldnotiz/",
+  "body": [
+    "der erste absatz.",
+    "<code>printf 'ein lokaler codeblock\\n'</code>",
+    "quelle: <a href=\"https://example.org/\">example.org</a>."
+  ]
+}
